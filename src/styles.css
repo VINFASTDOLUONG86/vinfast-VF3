@@ -1,0 +1,194 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-titan: var(--titan);
+  --color-onyx: var(--onyx);
+  --color-cream: var(--cream);
+  --font-display: "Manrope", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Luxury automotive palette */
+  --onyx: oklch(0.18 0.005 240);          /* deep charcoal black */
+  --titan: oklch(0.42 0.006 240);         /* titanium grey */
+  --cream: oklch(0.97 0.008 80);          /* warm ivory */
+  --gold: oklch(0.78 0.09 80);            /* champagne gold */
+  --gold-soft: oklch(0.86 0.05 85);       /* light champagne */
+  --silver: oklch(0.78 0.005 240);
+
+  --background: var(--cream);
+  --foreground: var(--onyx);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--onyx);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--onyx);
+  --primary: var(--onyx);
+  --primary-foreground: var(--cream);
+  --secondary: oklch(0.94 0.005 80);
+  --secondary-foreground: var(--onyx);
+  --muted: oklch(0.94 0.005 80);
+  --muted-foreground: oklch(0.5 0.006 240);
+  --accent: var(--gold);
+  --accent-foreground: var(--onyx);
+  --destructive: oklch(0.55 0.2 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.006 80);
+  --input: oklch(0.9 0.006 80);
+  --ring: var(--gold);
+
+  --gradient-gold: linear-gradient(135deg, oklch(0.86 0.06 85), oklch(0.74 0.1 75));
+  --gradient-onyx: linear-gradient(180deg, oklch(0.22 0.006 240), oklch(0.12 0.005 240));
+  --shadow-luxury: 0 30px 80px -30px oklch(0.18 0.005 240 / 0.35);
+  --shadow-soft: 0 8px 30px -10px oklch(0.18 0.005 240 / 0.18);
+  --shadow-gold: 0 10px 40px -15px oklch(0.78 0.09 80 / 0.5);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+}
+
+@utility text-gold-gradient {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass-card {
+  background: color-mix(in oklab, white 70%, transparent);
+  backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in oklab, var(--gold) 25%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+@utility glass-dark {
+  background: color-mix(in oklab, black 30%, transparent);
+  backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in oklab, var(--gold) 30%, transparent);
+}
+
+@utility btn-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--onyx);
+  color: var(--cream);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid transparent;
+}
+.btn-luxury:hover {
+  background: var(--gradient-gold);
+  color: var(--onyx);
+  box-shadow: var(--shadow-gold);
+  transform: translateY(-2px);
+}
+
+@utility btn-outline-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid color-mix(in oklab, var(--gold) 60%, transparent);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.btn-outline-luxury:hover {
+  background: color-mix(in oklab, var(--gold) 15%, transparent);
+  border-color: var(--gold);
+}
+
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--titan);
+  font-weight: 500;
+}
+.eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: var(--gold);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-slow {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-up { animation: fade-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.animate-fade-in-slow { animation: fade-in-slow 1.4s ease-out both; }
+
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
