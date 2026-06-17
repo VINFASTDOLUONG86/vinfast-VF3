@@ -371,7 +371,7 @@ function CostTable() {
 
 /* ─────────── CALCULATOR ─────────── */
 function Calculator() {
-  const price = 240_000_000;
+  const price = 260_000_000;
   const [down, setDown] = useState(30);
   const [months, setMonths] = useState(36);
   const [loanQuoteOpen, setLoanQuoteOpen] = useState(false);

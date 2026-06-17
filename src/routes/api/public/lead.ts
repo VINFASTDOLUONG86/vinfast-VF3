@@ -1,64 +1,65 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-// Google Apps Script Web App URL
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMT94f8l2hMXWTWFeUoHxGaVL5-9jjpWxVKqW80r9dwl9fRBnBR0tvkzmw9FK-Du2nvA/exec";
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzzkBXcoHA9fJOhAqF_lDMRsipP08TDI2NdDL2z41bCrGPgBGoYXKfgIugR7wx-LHtDRg/exec";
 
 const LeadSchema = z.object({
-  name: z.string().min(1).max(120),
-  phone: z.string().min(6).max(30),
-  need: z.string().max(120).optional().default(""),
-  source: z.string().max(60).optional().default("landing"),
+  name: z.string().min(1),
+  phone: z.string().min(1),
+  need: z.string().optional().default(""),
+  source: z.string().optional().default("website"),
 });
-
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
 
 export const Route = createFileRoute("/api/public/lead")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
         try {
-          const json = await request.json();
-          const parsed = LeadSchema.safeParse(json);
+          const body = await request.json();
+
+          const parsed = LeadSchema.safeParse(body);
+
           if (!parsed.success) {
-            return new Response(JSON.stringify({ error: "Invalid input" }), {
-              status: 400,
-              headers: { "Content-Type": "application/json", ...cors },
-            });
-          }
-          const { name, phone, need, source } = parsed.data;
-
-          // Forward to Google Apps Script
-          const res = await fetch(APPS_SCRIPT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, phone, need, source }),
-          });
-
-          if (!res.ok) {
-            const text = await res.text();
-            console.error("Apps Script failed:", res.status, text);
-            return new Response(JSON.stringify({ error: "Sheet write failed" }), {
-              status: 502,
-              headers: { "Content-Type": "application/json", ...cors },
-            });
+            return Response.json(
+              { ok: false, error: "Invalid input" },
+              { status: 400 }
+            );
           }
 
-          return new Response(JSON.stringify({ ok: true }), {
-            status: 200,
-            headers: { "Content-Type": "application/json", ...cors },
+          const params = new URLSearchParams({
+            name: parsed.data.name,
+            phone: parsed.data.phone,
+            need: parsed.data.need,
+            source: parsed.data.source,
           });
-        } catch (err) {
-          console.error("Lead handler error:", err);
-          return new Response(JSON.stringify({ error: "Server error" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json", ...cors },
+
+          const gasUrl = `${APPS_SCRIPT_URL}?${params.toString()}`;
+
+          console.log("Sending to GAS:", gasUrl);
+
+          const response = await fetch(gasUrl);
+
+          const text = await response.text();
+
+          console.log("GAS Response:", text);
+
+          return Response.json({
+            ok: true,
+            gasResponse: text,
           });
+        } catch (error) {
+          console.error(error);
+
+          return Response.json(
+            {
+              ok: false,
+              error: String(error),
+            },
+            {
+              status: 500,
+            }
+          );
         }
       },
     },
