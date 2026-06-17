@@ -26,7 +26,7 @@ export function FloatingCTA({ onQuoteClick }: { onQuoteClick?: () => void }) {
 
   return (
     <div
-      className={`fixed z-40 left-1/2 -translate-x-1/2 bottom-2 sm:bottom-6 w-[calc(100%-20px)] sm:w-auto transition-all duration-700 ${
+      className={`fixed z-40 left-1/2 -translate-x-1/2 bottom-2 sm:bottom-6 w-[calc(100%-40px)] sm:w-auto transition-all duration-700 ${
         show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       }`}
     >
@@ -88,14 +88,14 @@ export function FloatingCTA({ onQuoteClick }: { onQuoteClick?: () => void }) {
             const inner = (
               <>
                 <span
-                  className="relative flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full transition-all duration-500 group-hover/item:scale-110"
+                  className="relative flex items-center justify-center w-8 h-8 sm:w-7 sm:h-7 rounded-full transition-all duration-500 group-hover/item:scale-110"
                   style={{
                     background:
                       "radial-gradient(circle, color-mix(in oklab, var(--gold) 22%, transparent) 0%, transparent 70%)",
                   }}
                 >
                   <Icon
-                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gold transition-all duration-500 group-hover/item:drop-shadow-[0_0_6px_color-mix(in_oklab,var(--gold)_80%,transparent)]"
+                    className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-gold transition-all duration-500 group-hover/item:drop-shadow-[0_0_6px_color-mix(in_oklab,var(--gold)_80%,transparent)]"
                     strokeWidth={1.7}
                     style={{ filter: "drop-shadow(0 0 3px color-mix(in oklab, var(--gold) 40%, transparent))" }}
                   />

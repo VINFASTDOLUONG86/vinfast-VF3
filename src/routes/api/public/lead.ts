@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-const SPREADSHEET_ID = "1jwSnBmHXJEWvqAI8AKEHnjUkV8ZDmCKiRjsrZW4N7-M";
-const SHEET_NAME = "Trang tính1";
+// Google Apps Script Web App URL
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMT94f8l2hMXWTWFeUoHxGaVL5-9jjpWxVKqW80r9dwl9fRBnBR0tvkzmw9FK-Du2nvA/exec";
 
 const LeadSchema = z.object({
   name: z.string().min(1).max(120),
@@ -33,40 +33,16 @@ export const Route = createFileRoute("/api/public/lead")({
           }
           const { name, phone, need, source } = parsed.data;
 
-          const lovableKey = process.env.LOVABLE_API_KEY;
-          const connKey = process.env.GOOGLE_SHEETS_API_KEY;
-          if (!lovableKey || !connKey) {
-            return new Response(JSON.stringify({ error: "Missing credentials" }), {
-              status: 500,
-              headers: { "Content-Type": "application/json", ...cors },
-            });
-          }
-
-          // Build range with sheet name in single quotes. Encode the encoded
-          // form, then restore the colon (Sheets API rejects %3A).
-          const range = `'${SHEET_NAME}'!A:E`;
-          const encodedRange = encodeURIComponent(range).replace(/%3A/g, ":");
-          const url = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodedRange}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-
-          const timestamp = new Date().toLocaleString("vi-VN", {
-            timeZone: "Asia/Ho_Chi_Minh",
-          });
-
-          const res = await fetch(url, {
+          // Forward to Google Apps Script
+          const res = await fetch(APPS_SCRIPT_URL, {
             method: "POST",
-            headers: {
-              Authorization: `Bearer ${lovableKey}`,
-              "X-Connection-Api-Key": connKey,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              values: [[timestamp, name, phone, need, source]],
-            }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, phone, need, source }),
           });
 
           if (!res.ok) {
             const text = await res.text();
-            console.error("Sheets append failed:", res.status, text);
+            console.error("Apps Script failed:", res.status, text);
             return new Response(JSON.stringify({ error: "Sheet write failed" }), {
               status: 502,
               headers: { "Content-Type": "application/json", ...cors },
